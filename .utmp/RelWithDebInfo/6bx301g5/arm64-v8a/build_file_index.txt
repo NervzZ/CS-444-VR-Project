@@ -1,2 +1,0 @@
-C:\EPFL\VR\CS-444-VR-Project\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\CMakeLists.txt
-C:\EPFL\VR\CS-444-VR-Project\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt
