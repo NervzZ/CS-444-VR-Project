@@ -158,3 +158,5 @@ sysinfo.txt
 
 .utmp
 .idea
+/.vscode
+.vsconfig
