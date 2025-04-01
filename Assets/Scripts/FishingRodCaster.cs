@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
@@ -11,8 +12,12 @@ public class FishingRodCaster : MonoBehaviour
 
     [Header("Transforms")]
     public Transform controllerTransform;  // The hand/controller transform
-    public Transform rodTip;
-    public Transform bait;
+    public Transform rodTipTransform;
+    public Transform baitTransform;
+    public Transform baitInitPosTransform;
+    public Transform baitParentTransform;
+    
+    [Header("Others")]
     public LineRenderer lineRenderer;
     public Rigidbody baitRb;
 
@@ -23,7 +28,6 @@ public class FishingRodCaster : MonoBehaviour
     private bool _isHolding;
     private Vector3 _previousPos;
     private Vector3 _handVelocity;
-    private Vector3 _initBaitPos;
     
     private System.Action<InputAction.CallbackContext> _onCastStarted;
     private System.Action<InputAction.CallbackContext> _onCastCanceled;
@@ -33,7 +37,6 @@ public class FishingRodCaster : MonoBehaviour
         baitRb.isKinematic = true;
 
         _previousPos = controllerTransform.position;
-        _initBaitPos = bait.localPosition;
         
         // Store callbacks so we can unsubscribe later
         _onCastStarted = ctx => StartHolding();
@@ -44,6 +47,9 @@ public class FishingRodCaster : MonoBehaviour
         
         rodInteractable.selectEntered.AddListener(OnGrabbed);
         rodInteractable.selectExited.AddListener(OnReleased);
+        
+        baitTransform.SetParent(transform);
+        baitTransform.position = baitInitPosTransform.position;
 
         castAction.action.Enable();
     }
@@ -85,9 +91,12 @@ public class FishingRodCaster : MonoBehaviour
         if (!_isHeld) return;
         
         _isHolding = true;
+        
         baitRb.isKinematic = true;
         baitRb.linearVelocity = Vector3.zero;
-        bait.localPosition = _initBaitPos;
+        
+        baitTransform.SetParent(transform);
+        baitTransform.position = baitInitPosTransform.position;
     }
 
     private void ReleaseAndCast()
@@ -96,6 +105,10 @@ public class FishingRodCaster : MonoBehaviour
         if (!_isHolding) return;
         
         _isHolding = false;
+        
+        baitTransform.SetParent(baitParentTransform);
+        baitTransform.position = baitInitPosTransform.position;
+        
         baitRb.isKinematic = false;
         baitRb.linearVelocity = _handVelocity * castForceMultiplier;
     }
@@ -104,7 +117,7 @@ public class FishingRodCaster : MonoBehaviour
     {
         if (!lineRenderer) return;
         
-        lineRenderer.SetPosition(0, rodTip.position);
-        lineRenderer.SetPosition(1, bait.position);
+        lineRenderer.SetPosition(0, rodTipTransform.position);
+        lineRenderer.SetPosition(1, baitTransform.position);
     }
 }
