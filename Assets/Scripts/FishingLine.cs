@@ -14,6 +14,6 @@ public class FishingLine : MonoBehaviour
     
     void Update() {
         _lineRenderer.SetPosition(0, rodTip.position);
-        _lineRenderer.SetPosition(1, bait.position);
+        _lineRenderer.SetPosition(1, bait.position + bait.localPosition);
     }
 }
