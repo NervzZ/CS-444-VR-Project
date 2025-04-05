@@ -6,7 +6,7 @@ public class CustomTeleportationProvider : TeleportationProvider
 {
     float _DelayTime;
     float _DelayStartTime;
-    protected virtual void Update()
+    protected override void Update()
     {
         if (!validRequest)
             return;

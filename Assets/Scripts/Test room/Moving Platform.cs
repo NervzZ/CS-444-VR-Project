@@ -18,4 +18,14 @@ public class MovingPlatform : MonoBehaviour
         float offset = Mathf.Sin(Time.time * moveSpeed) * moveDistance * 0.5f;
         transform.position = startPos + moveDirection.normalized * offset;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log($"✅ Entered platform trigger: {other.name}");
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        Debug.Log($"⛔ Exited platform trigger: {other.name}");
+    }
 }
