@@ -21,11 +21,17 @@ public class MovingPlatform : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"✅ Entered platform trigger: {other.name}");
+        if (other.CompareTag("Player"))
+        {
+            other.transform.SetParent(transform);
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log($"⛔ Exited platform trigger: {other.name}");
+        if (other.CompareTag("Player"))
+        {
+            other.transform.SetParent(null);
+        }
     }
 }
