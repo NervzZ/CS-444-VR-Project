@@ -4,8 +4,8 @@ using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
 public class CustomTeleportationProvider : TeleportationProvider
 {
-    float m_DelayTime;
-    float m_DelayStartTime;
+    float _DelayTime;
+    float _DelayStartTime;
     protected virtual void Update()
     {
         if (!validRequest)
@@ -13,10 +13,10 @@ public class CustomTeleportationProvider : TeleportationProvider
 
         if (locomotionState == LocomotionState.Idle)
         {
-            if (m_DelayTime > 0f)
+            if (_DelayTime > 0f)
             {
                 if (TryPrepareLocomotion())
-                    m_DelayStartTime = Time.time;
+                    _DelayStartTime = Time.time;
             }
             else
             {
