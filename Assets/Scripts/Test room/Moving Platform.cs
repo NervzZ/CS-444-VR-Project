@@ -6,17 +6,17 @@ public class MovingPlatform : MonoBehaviour
     public float moveDistance = 5f;
     public float moveSpeed = 2f;
 
-    private Vector3 startPos;
+    private Vector3 _startPos;
 
-    void Start()
+    private void Start()
     {
-        startPos = transform.position;
+        _startPos = transform.position;
     }
 
-    void Update()
+    private void Update()
     {
         float offset = Mathf.Sin(Time.time * moveSpeed) * moveDistance * 0.5f;
-        transform.position = startPos + moveDirection.normalized * offset;
+        transform.position = _startPos + moveDirection.normalized * offset;
     }
 
     private void OnTriggerEnter(Collider other)

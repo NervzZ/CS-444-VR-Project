@@ -1,11 +1,18 @@
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
+/// <summary>
+/// Based on TeleportationProvider from XR Toolkit
+/// Resync player collider after teleporting
+/// </summary>
 public class CustomTeleportationProvider : TeleportationProvider
 {
-    float _DelayTime;
-    float _DelayStartTime;
+    private float _delayTime;
+    /// Had to add this because parent needs it
+    private float _delayStartTime;
+    
     protected override void Update()
     {
         if (!validRequest)
@@ -13,10 +20,10 @@ public class CustomTeleportationProvider : TeleportationProvider
 
         if (locomotionState == LocomotionState.Idle)
         {
-            if (_DelayTime > 0f)
+            if (_delayTime > 0f)
             {
                 if (TryPrepareLocomotion())
-                    _DelayStartTime = Time.time;
+                    _delayStartTime = Time.time;
             }
             else
             {
@@ -45,8 +52,6 @@ public class CustomTeleportationProvider : TeleportationProvider
                 case MatchOrientation.None:
                     // Change nothing. Maintain current origin rotation.
                     break;
-                default:
-                    break;
             }
 
             positionTransformation.targetPosition = currentRequest.destinationPosition;
@@ -61,15 +66,15 @@ public class CustomTeleportationProvider : TeleportationProvider
     
     private void FixColliderCenter()
     {
-        var xrOrigin = mediator.xrOrigin;
-        if (xrOrigin == null || xrOrigin.Camera == null || xrOrigin.Origin == null)
+        XROrigin xrOrigin = mediator.xrOrigin;
+        if (!xrOrigin || !xrOrigin.Camera || !xrOrigin.Origin)
             return;
 
-        var cc = xrOrigin.Origin.GetComponent<CharacterController>();
-        if (cc == null)
+        CharacterController cc = xrOrigin.Origin.GetComponent<CharacterController>();
+        if (!cc)
             return;
 
-        var localCamPos = xrOrigin.Origin.transform.InverseTransformPoint(xrOrigin.Camera.transform.position);
+        Vector3 localCamPos = xrOrigin.Origin.transform.InverseTransformPoint(xrOrigin.Camera.transform.position);
         cc.center = new Vector3(localCamPos.x, cc.center.y, localCamPos.z);
     }
 }
