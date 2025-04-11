@@ -9,6 +9,7 @@ public class FishingRodCaster : MonoBehaviour
     [Header("Input")]
     public InputActionReference castAction; // Reference to trigger action (Press & Release)
     public XRGrabInteractable rodInteractable;
+    public Collider rodCollider;
 
     [Header("Transforms")]
     public Transform controllerTransform;  // The hand/controller transform
@@ -38,23 +39,26 @@ public class FishingRodCaster : MonoBehaviour
 
         _previousPos = controllerTransform.position;
         
+        baitTransform.SetParent(transform);
+        baitTransform.position = baitInitPosTransform.position;
+    }
+
+    private void OnEnable()
+    {
         // Store callbacks so we can unsubscribe later
         _onCastStarted = ctx => StartHolding();
         _onCastCanceled = ctx => ReleaseAndCast();
-
+        
         castAction.action.started += _onCastStarted;
         castAction.action.canceled += _onCastCanceled;
         
         rodInteractable.selectEntered.AddListener(OnGrabbed);
         rodInteractable.selectExited.AddListener(OnReleased);
-        
-        baitTransform.SetParent(transform);
-        baitTransform.position = baitInitPosTransform.position;
 
         castAction.action.Enable();
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         castAction.action.started -= _onCastStarted;
         castAction.action.canceled -= _onCastCanceled;
@@ -72,11 +76,15 @@ public class FishingRodCaster : MonoBehaviour
     private void OnGrabbed(SelectEnterEventArgs args)
     {
         _isHeld = true;
+        // Disables collider which avoids unintentional grab with the other hand
+        rodCollider.enabled = false;
     }
 
     private void OnReleased(SelectExitEventArgs args)
     {
         _isHeld = false;
+        // Disables collider which avoids unintentional grab with the other hand
+        rodCollider.enabled = true;
     }
 
     private void UpdateHandVelocity()
