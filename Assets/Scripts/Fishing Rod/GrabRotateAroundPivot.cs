@@ -11,7 +11,7 @@ public class GrabRotateAroundPivot : MonoBehaviour
     /// <summary>
     /// The local normal of the plane to constrain motion to
     /// </summary>
-    private readonly Vector3 _localPlaneNormal = Vector3.right;
+    private readonly Vector3 _localPlaneNormal = Vector3.up;
 
     private Transform _interactorAttachTransform;
     private XRGrabInteractable _grabInteractable;
