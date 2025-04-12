@@ -13,13 +13,11 @@ public class FishingRodCaster : MonoBehaviour
 
     [Header("Transforms")]
     public Transform controllerTransform;  // The hand/controller transform
-    public Transform rodTipTransform;
     public Transform baitTransform;
     public Transform baitInitPosTransform;
     public Transform baitParentTransform;
     
     [Header("Others")]
-    public LineRenderer lineRenderer;
     public Rigidbody baitRb;
 
     [Header("Casting Settings")]
@@ -70,7 +68,6 @@ public class FishingRodCaster : MonoBehaviour
     private void Update()
     {
         UpdateHandVelocity();
-        UpdateLine();
     }
     
     private void OnGrabbed(SelectEnterEventArgs args)
@@ -119,13 +116,5 @@ public class FishingRodCaster : MonoBehaviour
         
         baitRb.isKinematic = false;
         baitRb.linearVelocity = _handVelocity * castForceMultiplier;
-    }
-
-    private void UpdateLine()
-    {
-        if (!lineRenderer) return;
-        
-        lineRenderer.SetPosition(0, rodTipTransform.position);
-        lineRenderer.SetPosition(1, baitTransform.position);
     }
 }

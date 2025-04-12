@@ -7,12 +7,14 @@ public class FishingLine : MonoBehaviour
     
     private LineRenderer _lineRenderer;
     
-    void Start() {
+    private void Start()
+    {
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.positionCount = 2;
     }
     
-    void Update() {
+    private void Update()
+    {
         _lineRenderer.SetPosition(0, rodTip.position);
         _lineRenderer.SetPosition(1, bait.position);
     }
