@@ -8,16 +8,16 @@ public class GrabRotateAroundPivot : MonoBehaviour
     [Tooltip("The pivot point around which this object should rotate when grabbed.")]
     public Transform pivotPoint;
 
-    [Tooltip("The local normal of the plane to constrain motion to (e.g., Vector3.right for X-axis).")]
-    public Vector3 localPlaneNormal = Vector3.right;
+    /// <summary>
+    /// The local normal of the plane to constrain motion to
+    /// </summary>
+    private readonly Vector3 _localPlaneNormal = Vector3.right;
 
     private Transform _interactorAttachTransform;
     private XRGrabInteractable _grabInteractable;
 
     private float _grabbedRadius;
     private Vector3 _initialDirectionOnPlane;
-    
-    private float _planeOffset = 0.05f / 2;
 
     private void OnEnable()
     {
@@ -36,7 +36,7 @@ public class GrabRotateAroundPivot : MonoBehaviour
     {
         _interactorAttachTransform = args.interactorObject.GetAttachTransform(_grabInteractable);
 
-        Vector3 planeNormal = pivotPoint.TransformDirection(localPlaneNormal).normalized;
+        Vector3 planeNormal = pivotPoint.TransformDirection(_localPlaneNormal).normalized;
         Vector3 toStick = transform.position - pivotPoint.position;
         Vector3 projected = Vector3.ProjectOnPlane(toStick, planeNormal);
 
@@ -51,10 +51,10 @@ public class GrabRotateAroundPivot : MonoBehaviour
 
     private void Update()
     {
-        if (_interactorAttachTransform == null || pivotPoint == null)
+        if (!_interactorAttachTransform || !pivotPoint)
             return;
 
-        Vector3 planeNormal = pivotPoint.TransformDirection(localPlaneNormal).normalized;
+        Vector3 planeNormal = pivotPoint.TransformDirection(_localPlaneNormal).normalized;
 
         // Vector from pivot to current hand position, projected on plane
         Vector3 toHand = _interactorAttachTransform.position - pivotPoint.position;
@@ -66,10 +66,10 @@ public class GrabRotateAroundPivot : MonoBehaviour
 
         // Set final position using original radius and plane
         Vector3 targetPosition = pivotPoint.position + finalDirection * _grabbedRadius +
-                                 planeNormal * (transform.localScale.x / 2);
+                                 planeNormal * (transform.localScale.y / 2);
         transform.position = targetPosition;
 
-        // Optional: stick faces outward from pivot
+        // Stick faces outward from pivot
         transform.rotation = Quaternion.LookRotation(finalDirection, planeNormal);
     }
 }
